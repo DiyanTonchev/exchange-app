@@ -8,7 +8,7 @@ import {
 
 import Header from './Header';
 import Home from './Home';
-import TradesGrid from './TradesGrid';
+import MarketTrades from './MarketTrades';
 
 const ExchangeApp = memo(() => (
   <BrowserRouter>
@@ -25,7 +25,7 @@ const ExchangeApp = memo(() => (
       />
       <Route
         path='/:pair/details'
-        element={<TradesGrid />}
+        element={<MarketTrades />}
       />
       <Route path='*' exact element={<Navigate to={{ pathname: '/' }} replace />} />
     </Routes>

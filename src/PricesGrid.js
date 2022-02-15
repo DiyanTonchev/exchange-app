@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid } from '@mui/x-data-grid';
 import { Modal } from 'react-bootstrap'
 
-import TradesGrid from './TradesGrid';
+import MarketTrades from './MarketTrades';
 
 import {
   fetchPriceBinance,
@@ -106,7 +106,7 @@ const PricesGrid = () => {
           <Modal.Title>Market Trades</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <TradesGrid />
+          <MarketTrades />
         </Modal.Body>
       </Modal>
     </div>

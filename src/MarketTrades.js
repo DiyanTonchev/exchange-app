@@ -24,7 +24,7 @@ const GridWrapper = ({ children, wrapInRow }) => (
   )
 );
 
-const TradesGrid = () => {
+const MarketTrades = () => {
   const [rows, setRows] = useState([]);
 
   const {
@@ -141,4 +141,4 @@ const TradesGrid = () => {
   );
 };
 
-export default TradesGrid;
+export default MarketTrades;
