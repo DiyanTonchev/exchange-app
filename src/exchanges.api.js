@@ -11,7 +11,7 @@ export const fetchPriceBinance = async (pair) => {
   const result = await response.json();
 
   return {
-    id: Math.random().toString(16).slice(2),
+    id: Math.random().toString(16).slice(4),
     exhange: 'Binance',
     price: result?.price
   };
@@ -28,7 +28,7 @@ export const fetchTradesBinance = async (pair) => {
   const data = result?.map(({ price, time, qty, isBuyerMaker }) => {
     const date = new Date(time);
     return {
-      id: Math.random().toString(16).slice(2),
+      id: Math.random().toString(16).slice(4),
       price,
       amount: qty,
       time: date ? date.toLocaleTimeString() : '',
@@ -46,7 +46,7 @@ export const fetchPriceBitfinex = async (pair) => {
   const [, , , , , , price] = result || [];
 
   return {
-    id: Math.random().toString(16).slice(2),
+    id: Math.random().toString(16).slice(4),
     exhange: 'Bitfinex',
     price
   };
@@ -75,7 +75,6 @@ export const fetchTradesBitfinex = async (pair) => {
   return data;
 };
 
-
 export const fetchPriceKraken = async (pair) => {
   const response = await fetch(`${KRAKEN_API_URL}Ticker?pair=${pair}`);
   const result = await response.json();
@@ -84,7 +83,7 @@ export const fetchPriceKraken = async (pair) => {
   const [price] = result?.result ? result?.result[prop]?.c : [null];
 
   return {
-    id: Math.random().toString(16).slice(2),
+    id: Math.random().toString(16).slice(4),
     exhange: 'Kraken',
     price
   };
@@ -104,7 +103,7 @@ export const fetchTradesKraken = async (pair) => {
     const date = new Date(time);
 
     return {
-      id: Math.random().toString(16).slice(2),
+      id: Math.random().toString(16).slice(4),
       price,
       amount,
       time: date ? date.toLocaleTimeString() : '',

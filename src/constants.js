@@ -11,4 +11,3 @@ export const EXHANGES = {
 };
 
 export const TRADES_LIMIT = 30;
-
