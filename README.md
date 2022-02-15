@@ -1,1 +1,1 @@
-# Crypto Exhange App
+# Crypto Exchange App
