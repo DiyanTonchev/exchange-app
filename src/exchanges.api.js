@@ -76,7 +76,7 @@ export const fetchTradesBitfinex = async (pair) => {
 };
 
 export const fetchPriceHuobi = async (pair) => {
-  const response = await fetch(`${HUOBI_API_URL}/market/history/kline?period=1min&size=1&symbol=${pair}`);
+  const response = await fetch(`${HUOBI_API_URL}kline?period=1min&size=1&symbol=${pair}`);
   const result = await response.json();
 
   const [candle] = result?.data || [];
@@ -90,7 +90,7 @@ export const fetchPriceHuobi = async (pair) => {
 };
 
 export const fetchTradesHuobi = async (pair) => {
-  const response = await fetch(`${HUOBI_API_URL}/market/history/trade?symbol=${pair}&size=${TRADES_LIMIT}`);
+  const response = await fetch(`${HUOBI_API_URL}trade?symbol=${pair}&size=${TRADES_LIMIT}`);
   const result = await response.json();
 
   if (!result?.data) {
