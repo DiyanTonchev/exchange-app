@@ -8,6 +8,7 @@ import MarketTrades from './MarketTrades';
 import {
   fetchPriceBinance,
   fetchPriceBitfinex,
+  fetchPriceHuobi,
   fetchPriceKraken
 } from './exchanges.api';
 import { setExchange } from './redux/actions';
@@ -31,6 +32,7 @@ const PricesGrid = () => {
         const data = await Promise.all([
           fetchPriceBinance(cryptocurrencyPair?.replace('/', 'B')),
           fetchPriceBitfinex(pair),
+          fetchPriceHuobi(pair.toLowerCase()),
           fetchPriceKraken(pair)
         ]);
 

@@ -24,7 +24,7 @@ const Search = () => {
   const handleKeyPress = (e) => {
     if (e.charCode === 13) {
       e.preventDefault();
-      onSearch();
+      cryptoPair?.includes('/') && onSearch();
     }
   }
 
@@ -32,7 +32,7 @@ const Search = () => {
     <Form>
       <InputGroup>
         <FormControl
-          placeholder='Search Cryptocurrency Pair'
+          placeholder='Search cryptocurrency pair (e.g. BTC/USD)'
           onChange={onSearchTextChange}
           onKeyPress={handleKeyPress}
         />

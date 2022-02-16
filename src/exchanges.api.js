@@ -75,6 +75,44 @@ export const fetchTradesBitfinex = async (pair) => {
   return data;
 };
 
+export const fetchPriceHuobi = async (pair) => {
+  const response = await fetch(`${HUOBI_API_URL}/market/history/kline?period=1min&size=1&symbol=${pair}`);
+  const result = await response.json();
+
+  const [candle] = result?.data || [];
+  const { id, close } = candle || {};
+
+  return {
+    id: id || Math.random().toString(16).slice(4),
+    exhange: 'Huobi',
+    price: close
+  };
+};
+
+export const fetchTradesHuobi = async (pair) => {
+  const response = await fetch(`${HUOBI_API_URL}/market/history/trade?symbol=${pair}&size=${TRADES_LIMIT}`);
+  const result = await response.json();
+
+  if (!result?.data) {
+    return [];
+  }
+ 
+  const data = result.data.map(({ data }) => {
+    const [history] = data;
+    const { amount, direction, id, price, ts } = history;
+    const date = new Date(ts);
+    return {
+      id,
+      price,
+      amount,
+      time: date ? date.toLocaleTimeString() : '',
+      isBuyerMaker: direction === 'buy'
+    };
+  }) || [];
+
+  return data;
+};
+
 export const fetchPriceKraken = async (pair) => {
   const response = await fetch(`${KRAKEN_API_URL}Ticker?pair=${pair}`);
   const result = await response.json();

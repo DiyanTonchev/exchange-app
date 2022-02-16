@@ -2,23 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useLocation } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
-import { Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 
 import { setCryptocurrencyPair } from './redux/actions';
 import {
   fetchTradesBinance,
   fetchTradesBitfinex,
+  fetchTradesHuobi,
   fetchTradesKraken
 } from './exchanges.api';
 import { EXHANGES } from './constants';
 
-const GridWrapper = ({ children, wrapInRow }) => (
-  wrapInRow ? (
-    <Row className='justify-content-md-center mt-4'>
-      <Col xs='5'>
-        {children}
-      </Col>
-    </Row>
+const GridWrapper = ({ children, wrapInContainer }) => (
+  wrapInContainer ? (
+    <Container>
+      <Row className='justify-content-md-center mt-4'>
+        <Col xs='6'>
+          {children}
+        </Col>
+      </Row>
+    </Container>
   ) : (
     <>{children}</>
   )
@@ -35,41 +38,41 @@ const MarketTrades = () => {
     selectedExchange: state.selectedExchange
   }));
   const dispatch = useDispatch();
-  const { pair } = useParams();
+  const { pair: pairUrlParams } = useParams();
   const { pathname } = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
       const pair = cryptocurrencyPair?.replace('/', '');
       let data = [];
-      try {
-        switch (selectedExchange?.toLowerCase()) {
-          case EXHANGES.BINANCE:
-            data = await fetchTradesBinance(cryptocurrencyPair?.replace('/', 'B'))
-            break;
-          case EXHANGES.BITFINEX:
-            data = await fetchTradesBitfinex(pair)
-            break;
-          case EXHANGES.KRAKEN:
-            data = await fetchTradesKraken(pair)
-            break;
-          default:
-            data = await Promise.all([
-              fetchTradesBinance(cryptocurrencyPair?.replace('/', 'B')),
-              fetchTradesBitfinex(pair),
-              fetchTradesKraken(pair)
-            ]);
-            break;
-        }
-
-        setRows(data.flat());
-      } catch (e) {
-        setRows([]);
+      switch (selectedExchange?.toLowerCase()) {
+        case EXHANGES.BINANCE:
+          data = await fetchTradesBinance(cryptocurrencyPair?.replace('/', 'B'))
+          break;
+        case EXHANGES.BITFINEX:
+          data = await fetchTradesBitfinex(pair)
+          break;
+        case EXHANGES.HUOBI:
+          data = await fetchTradesHuobi(pair.toLowerCase())
+          break;
+        case EXHANGES.KRAKEN:
+          data = await fetchTradesKraken(pair)
+          break;
+        default:
+          data = await Promise.all([
+            fetchTradesBinance(cryptocurrencyPair?.replace('/', 'B')),
+            fetchTradesBitfinex(pair),
+            fetchTradesHuobi(pair),
+            fetchTradesKraken(pair)
+          ]);
+          break;
       }
+
+      setRows(data.flat());
     }
 
-    if (!cryptocurrencyPair && pair) {
-      dispatch(setCryptocurrencyPair(pair.toUpperCase()));
+    if (!cryptocurrencyPair && pairUrlParams) {
+      dispatch(setCryptocurrencyPair(pairUrlParams.toUpperCase()));
     }
 
     if (cryptocurrencyPair) {
@@ -83,7 +86,7 @@ const MarketTrades = () => {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [cryptocurrencyPair, pair]);
+  }, [cryptocurrencyPair, pairUrlParams]);
 
   const [first, second] = cryptocurrencyPair?.split('/');
 
@@ -91,7 +94,7 @@ const MarketTrades = () => {
     {
       field: 'price',
       headerName: `Price ${second ? `(${second})` : ''}`,
-      width: 150,
+      width: 130,
       editable: false,
       renderCell: ({ value, row }) => {
         return <span className={row?.isBuyerMaker ? 'link-success' : 'link-danger'}>{value}</span>
@@ -100,7 +103,7 @@ const MarketTrades = () => {
     {
       field: 'amount',
       headerName: `Amount  ${first && second ? `(${first})` : ''}`,
-      width: 120,
+      width: 150,
       editable: false,
     },
     {
@@ -122,11 +125,11 @@ const MarketTrades = () => {
     }
   ];
 
-  const isDetailsPage =  pathname?.split('/').includes('details');
+  const isDetailsPage = pathname?.split('/').includes('details');
   return (
     <>
       {isDetailsPage && <h3 className='mt-4 text-center'>Market Trades</h3>}
-      <GridWrapper wrapInRow={isDetailsPage}>
+      <GridWrapper wrapInContainer={isDetailsPage}>
         <div style={{ height: 380, width: '100%' }}>
           <DataGrid
             rows={rows}
