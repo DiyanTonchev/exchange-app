@@ -24,7 +24,7 @@ const Search = () => {
   const handleKeyPress = (e) => {
     if (e.charCode === 13) {
       e.preventDefault();
-      cryptoPair?.includes('/') && onSearch();
+      onSearch();
     }
   }
 
@@ -39,7 +39,7 @@ const Search = () => {
         <Button
           variant='primary'
           id='search-btn'
-          disabled={cryptoPair?.length < 4 || !cryptoPair?.includes('/')}
+          disabled={cryptoPair?.length < 6}
           onClick={onSearch}
         >
           Search

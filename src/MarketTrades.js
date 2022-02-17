@@ -43,11 +43,12 @@ const MarketTrades = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const pair = cryptocurrencyPair?.replace('/', '');
+      const pair = cryptocurrencyPair?.replace(/\W/, '');
+      const binancePair = cryptocurrencyPair.match(/\W/) ? cryptocurrencyPair?.replace(/\W/, 'B') : cryptocurrencyPair;
       let data = [];
       switch (selectedExchange?.toLowerCase()) {
         case EXHANGES.BINANCE:
-          data = await fetchTradesBinance(cryptocurrencyPair?.replace('/', 'B'))
+          data = await fetchTradesBinance(binancePair)
           break;
         case EXHANGES.BITFINEX:
           data = await fetchTradesBitfinex(pair)
@@ -60,7 +61,7 @@ const MarketTrades = () => {
           break;
         default:
           data = await Promise.all([
-            fetchTradesBinance(cryptocurrencyPair?.replace('/', 'B')),
+            fetchTradesBinance(binancePair),
             fetchTradesBitfinex(pair),
             fetchTradesHuobi(pair),
             fetchTradesKraken(pair)
@@ -88,7 +89,7 @@ const MarketTrades = () => {
     return () => clearInterval(interval);
   }, [cryptocurrencyPair, pairUrlParams]);
 
-  const [first, second] = cryptocurrencyPair?.split('/');
+  const [first, second] = cryptocurrencyPair?.split(/\W/);
 
   const columns = [
     {
@@ -125,7 +126,7 @@ const MarketTrades = () => {
     }
   ];
 
-  const isDetailsPage = pathname?.split('/').includes('details');
+  const isDetailsPage = pathname?.split(/\W/)?.includes('details');
   return (
     <>
       {isDetailsPage && <h3 className='mt-4 text-center'>Market Trades</h3>}

@@ -27,10 +27,11 @@ const PricesGrid = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const pair = cryptocurrencyPair?.replace('/', '');
+      const pair = cryptocurrencyPair?.replace(/\W/, '');
+      const binancePair = cryptocurrencyPair.match(/\W/) ? cryptocurrencyPair?.replace(/\W/, 'B') : cryptocurrencyPair;
       try {
         const data = await Promise.all([
-          fetchPriceBinance(cryptocurrencyPair?.replace('/', 'B')),
+          fetchPriceBinance(binancePair),
           fetchPriceBitfinex(pair),
           fetchPriceHuobi(pair.toLowerCase()),
           fetchPriceKraken(pair)
@@ -76,7 +77,7 @@ const PricesGrid = () => {
       headerName: 'Price',
       width: 260,
       renderCell: ({ value, row }) => {
-        const [first, second] = cryptocurrencyPair?.split('/');
+        const [first, second] = cryptocurrencyPair?.split(/\W/);
         const price = Number(value).toFixed(3)
         return <>
           {value ?
