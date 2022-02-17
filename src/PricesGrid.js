@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { DataGrid } from '@mui/x-data-grid';
 import { Modal } from 'react-bootstrap'
+import { trackPromise, usePromiseTracker } from 'react-promise-tracker'
+import BeatLoader from 'react-spinners/BeatLoader';
 
 import MarketTrades from './MarketTrades';
 
@@ -15,6 +17,8 @@ import { setExchange } from './redux/actions';
 
 const PricesGrid = () => {
   const [rows, setRows] = useState([])
+
+  const { promiseInProgress } = usePromiseTracker();
 
   const {
     cryptocurrencyPair,
@@ -44,7 +48,7 @@ const PricesGrid = () => {
     };
 
     if (cryptocurrencyPair) {
-      fetchData();
+      trackPromise(fetchData());
     }
 
     const interval = setInterval(() => {
@@ -87,7 +91,7 @@ const PricesGrid = () => {
               aria-hidden
               onClick={() => onPriceClick(row?.exhange)}
             >
-              {second ? `1 ${first} = ${price} ${second}`: price}
+              {second ? `1 ${first} = ${price} ${second}` : price}
             </a>) : 'Pair is not supported '}
         </>
       },
@@ -96,14 +100,17 @@ const PricesGrid = () => {
   ];
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={4}
-        rowsPerPageOptions={[4]}
-        disableSelectionOnClick
-      />
+    <div style={{ height: 400, width: '100%' }} className='text-center'>
+      <BeatLoader color='#36D7B7' loading={promiseInProgress} margin={4} size={15} />
+      {!promiseInProgress && (
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={4}
+          rowsPerPageOptions={[4]}
+          disableSelectionOnClick
+        />
+      )}
       <Modal show={!!selectedExchange?.length} onHide={closeModal}>
         <Modal.Header closeButton>
           <Modal.Title>Market Trades</Modal.Title>
